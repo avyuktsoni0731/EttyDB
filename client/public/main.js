@@ -1,9 +1,12 @@
 function gatherInfo() {
     const inputs = Array.from(document.getElementsByClassName('userInput'));
-    const userInput = {};
-    for(let i in inputs){
-        userInput[i] = inputs[i].value;
-    }
+    const userInput = [];
+    inputs.forEach(input => {
+        userInput.push({
+            type: input.getAttribute('aria-placeholder') || input.placeholder,
+            value: input.value
+        });
+    });
     fetch('http://localhost:8080/storeData', {
         method: 'POST',
         headers: {
