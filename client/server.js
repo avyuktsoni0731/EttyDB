@@ -3,8 +3,10 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 8080;
 
-const TELEGRAM_BOT_TOKEN = "6894974714:AAEbOAZb0Oz1q8uXvMD6FqIAX1oTAZaZU7g";
-const TELEGRAM_CHAT_ID = "1026814070";
+require("dotenv").config();
+
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
