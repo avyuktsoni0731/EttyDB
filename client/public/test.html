@@ -1,17 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test CDN-hosted JavaScript Function</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="main.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Test CDN-hosted JavaScript Function</h1>
-    <input type="text" class="userInput" placeholder="username">
-    <input type="password" class="userInput" placeholder="password">
-    <input type="email" class="userInput" placeholder="email">
-    <button onclick="gatherInfo()">Submit</button>
-</body>
+
+    <!-- Form for storing data -->
+    <div>
+      <h2>Store Data</h2>
+      <input type="text" class="userInput" placeholder="username" />
+      <input type="password" class="userInput" placeholder="password" />
+      <input type="email" class="userInput" placeholder="email" />
+      <button onclick="gatherInfo()">Submit</button>
+    </div>
+
+    <!-- Form for verifying data -->
+    <div>
+      <h2>Verify Data</h2>
+      <input
+        type="text"
+        id="verifyUsername"
+        class="verifyInput"
+        placeholder="username"
+      />
+      <input
+        type="password"
+        id="verifyPassword"
+        class="verifyInput"
+        placeholder="password"
+      />
+      <input
+        type="email"
+        id="verifyEmail"
+        class="verifyInput"
+        placeholder="email"
+      />
+      <button onclick="verifyInfo()">Verify</button>
+    </div>
+
+    <div id="verificationResult"></div>
+  </body>
 </html>
