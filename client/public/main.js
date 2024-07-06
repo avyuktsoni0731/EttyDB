@@ -2,9 +2,10 @@ function gatherInfo() {
     const inputs = Array.from(document.getElementsByClassName('userInput'));
     const SECRET_KEY = 'key';
     const userInput = [];
-    
+    const id = Date.now().toString();
     inputs.forEach(input => {
         userInput.push({
+            id: id,
             type: input.getAttribute('aria-placeholder') || input.placeholder,
             value: input.value
         });
