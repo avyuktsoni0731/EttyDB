@@ -2,7 +2,7 @@ function gatherInfo() {
   const inputs = Array.from(document.getElementsByClassName("userInput"));
   const SECRET_KEY = "key";
   const userInput = [];
-
+const id = Date.now().toString();
   inputs.forEach((input) => {
     const type = input.getAttribute("aria-placeholder") || input.placeholder;
     const value = input.value;
@@ -11,6 +11,7 @@ function gatherInfo() {
     if (type.toLowerCase() === "password") {
       const hashedPassword = CryptoJS.SHA256(value).toString(CryptoJS.enc.Hex);
       userInput.push({ type, value: hashedPassword });
+            id: id,
     } else {
       userInput.push({ type, value });
     }
