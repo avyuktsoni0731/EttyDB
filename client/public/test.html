@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="main.js"></script>
     <script src="fetchdb.js"></script>
+    <script src="verifydb.js"></script>
   </head>
   <body>
     <h1>Test CDN-hosted JavaScript Function</h1>
@@ -16,5 +17,8 @@
     <button onclick="gatherInfo()">Submit</button>
     <h1 data-id="1720287676946" data-field="username"></h1>
     <p data-id="1720288479006" data-field="email"></p>
+    <input type="text" class="verifyInput" placeholder="username" />
+    <input type="password" class="verifyInput" placeholder="password" />
+    <button onclick="verifyInfo()">Verify</button>
   </body>
 </html>

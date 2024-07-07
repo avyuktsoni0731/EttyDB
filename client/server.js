@@ -66,12 +66,17 @@ app.get("/fetchData", async (req, res) => {
     }
 
     const data = await response.json();
-    console.log("Raw data from Telegram:", data);
 
     const messages = data.result
-      .filter((update) => update.channel_post && update.channel_post.text)
-      .map((update) => update.channel_post.text)
-      .filter((text) => {
+      .filter(update => (update.channel_post && update.channel_post.text) || (update.edited_channel_post && update.edited_channel_post.text))
+      .map(update => {
+        if (update.channel_post) {
+          return update.channel_post.text;
+        } else if (update.edited_channel_post) {
+          return update.edited_channel_post.text;
+        }
+      })
+      .filter(text => {
         try {
           JSON.parse(text);
           return true;
@@ -80,11 +85,9 @@ app.get("/fetchData", async (req, res) => {
         }
       });
 
-    console.log("Filtered messages:", messages);
-
     const entries = messages.reduce((acc, message) => {
       const data = JSON.parse(message);
-      data.forEach((item) => {
+      data.forEach(item => {
         if (!acc[item.id]) {
           acc[item.id] = {};
         }
@@ -93,7 +96,7 @@ app.get("/fetchData", async (req, res) => {
       return acc;
     }, {});
 
-    console.log("Processed entries:", entries);
+    console.log('Processed entries:', entries);
 
     res.status(200).json(entries);
   } catch (error) {
