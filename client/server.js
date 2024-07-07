@@ -9,9 +9,7 @@ require("dotenv").config();
 const SECRET_KEY = "key";
 const TELEGRAM_BOT_TOKEN = "6894974714:AAEbOAZb0Oz1q8uXvMD6FqIAX1oTAZaZU7g";
 const TELEGRAM_BOT_TOKEN_2 = "6939916007:AAF5h7hwD2-E8YVWXSO9SWii20-wAQIovVQ";
-const TELEGRAM_CHAT_ID = "-1002236584741";
-
-let dataEntries = {};
+const TELEGRAM_CHAT_ID = "-1002209368311";
 
 app.use(bodyParser.json());
 app.use(express.static("public"));
@@ -68,15 +66,19 @@ app.get("/fetchData", async (req, res) => {
     const data = await response.json();
 
     const messages = data.result
-      .filter(update => (update.channel_post && update.channel_post.text) || (update.edited_channel_post && update.edited_channel_post.text))
-      .map(update => {
+      .filter(
+        (update) =>
+          (update.channel_post && update.channel_post.text) ||
+          (update.edited_channel_post && update.edited_channel_post.text)
+      )
+      .map((update) => {
         if (update.channel_post) {
           return update.channel_post.text;
         } else if (update.edited_channel_post) {
           return update.edited_channel_post.text;
         }
       })
-      .filter(text => {
+      .filter((text) => {
         try {
           JSON.parse(text);
           return true;
@@ -87,7 +89,7 @@ app.get("/fetchData", async (req, res) => {
 
     const entries = messages.reduce((acc, message) => {
       const data = JSON.parse(message);
-      data.forEach(item => {
+      data.forEach((item) => {
         if (!acc[item.id]) {
           acc[item.id] = {};
         }
@@ -96,7 +98,7 @@ app.get("/fetchData", async (req, res) => {
       return acc;
     }, {});
 
-    console.log('Processed entries:', entries);
+    console.log("Processed entries:", entries);
 
     res.status(200).json(entries);
   } catch (error) {
