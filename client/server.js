@@ -99,8 +99,18 @@ app.get("/fetchData", async (req, res) => {
     }, {});
 
     console.log("Processed entries:", entries);
+    const filteredEntries = Object.entries(entries).reduce(
+      (acc, [id, entry]) => {
+        if (entry.chatid === "-1002236584741") {
+          acc[id] = entry;
+        }
+        return acc;
+      },
+      {}
+    );
 
-    res.status(200).json(entries);
+    console.log("Filtered entries:", filteredEntries);
+    res.status(200).json(filteredEntries);
   } catch (error) {
     console.error("Error fetching data from Telegram:", error);
     res.status(500).send("Failed to fetch data from Telegram");
