@@ -68,15 +68,19 @@ app.get("/fetchData", async (req, res) => {
     const data = await response.json();
 
     const messages = data.result
-      .filter(update => (update.channel_post && update.channel_post.text) || (update.edited_channel_post && update.edited_channel_post.text))
-      .map(update => {
+      .filter(
+        (update) =>
+          (update.channel_post && update.channel_post.text) ||
+          (update.edited_channel_post && update.edited_channel_post.text)
+      )
+      .map((update) => {
         if (update.channel_post) {
           return update.channel_post.text;
         } else if (update.edited_channel_post) {
           return update.edited_channel_post.text;
         }
       })
-      .filter(text => {
+      .filter((text) => {
         try {
           JSON.parse(text);
           return true;
@@ -87,7 +91,7 @@ app.get("/fetchData", async (req, res) => {
 
     const entries = messages.reduce((acc, message) => {
       const data = JSON.parse(message);
-      data.forEach(item => {
+      data.forEach((item) => {
         if (!acc[item.id]) {
           acc[item.id] = {};
         }
@@ -96,15 +100,18 @@ app.get("/fetchData", async (req, res) => {
       return acc;
     }, {});
 
-    console.log('Processed entries:', entries);
-    const filteredEntries = Object.entries(entries).reduce((acc, [id, entry]) => {
-      if (entry.chatid === "-1002209368311") {
-        acc[id] = entry;
-      }
-      return acc;
-    }, {});
+    console.log("Processed entries:", entries);
+    const filteredEntries = Object.entries(entries).reduce(
+      (acc, [id, entry]) => {
+        if (entry.chatid === "-1002209368311") {
+          acc[id] = entry;
+        }
+        return acc;
+      },
+      {}
+    );
 
-    console.log('Filtered entries:', filteredEntries);
+    console.log("Filtered entries:", filteredEntries);
     res.status(200).json(filteredEntries);
   } catch (error) {
     console.error("Error fetching data from Telegram:", error);
