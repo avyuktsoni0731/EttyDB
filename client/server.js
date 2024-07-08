@@ -11,6 +11,8 @@ const TELEGRAM_BOT_TOKEN = "6894974714:AAEbOAZb0Oz1q8uXvMD6FqIAX1oTAZaZU7g";
 const TELEGRAM_BOT_TOKEN_2 = "6939916007:AAF5h7hwD2-E8YVWXSO9SWii20-wAQIovVQ";
 const TELEGRAM_CHAT_ID = "-1002209368311";
 
+let dataEntries = {};
+
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
@@ -101,7 +103,7 @@ app.get("/fetchData", async (req, res) => {
     console.log("Processed entries:", entries);
     const filteredEntries = Object.entries(entries).reduce(
       (acc, [id, entry]) => {
-        if (entry.chatid === "-1002236584741") {
+        if (entry.chatid === "-1002209368311") {
           acc[id] = entry;
         }
         return acc;
