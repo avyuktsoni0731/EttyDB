@@ -61,8 +61,6 @@ app.post("/storeData", async (req, res) => {
     if (!respons.ok) {
       throw new Error("Failed to send message to Telegram");
     }
-
-    // res.status(200).send(`Data stored with ID: ${id}`);
   } catch (error) {
     console.error("Error storing data:", error);
     res.status(500).send("Failed to store data");
@@ -75,76 +73,20 @@ app.post("/storeData", async (req, res) => {
 app.get("/fetchData", async (req, res) => {
   const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`;
   try {
-    const resultArray = [];
+    const resultDict = {};
     const findResult = collection.find({ chat_id: TELEGRAM_CHAT_ID });
     await findResult.forEach((doc) => {
-      resultArray.push(doc);
+      const text_id = doc.text_id;
+      if (!resultDict[text_id]) {
+        resultDict[text_id] = {};
+      }
+      doc.text.forEach((item) => {
+        resultDict[text_id][item.type] = item.value;
+      });
     });
 
-    // const fetch = await import("node-fetch");
-    // const response = await fetch.default(telegramApiUrl, {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // if (!response.ok) {
-    //   throw new Error("Failed to fetch data from Telegram");
-    // }
-
-    // const data = await response.json();
-
-    // const messages = data.result
-    //   .filter(
-    //     (update) =>
-    //       (update.channel_post && update.channel_post.text) ||
-    //       (update.edited_channel_post && update.edited_channel_post.text)
-    //   )
-    //   .map((update) => {
-    //     if (update.channel_post) {
-    //       return update.channel_post.text;
-    //     } else if (update.edited_channel_post) {
-    //       return update.edited_channel_post.text;
-    //     }
-    //   })
-    //   .filter((text) => {
-    //     try {
-    //       JSON.parse(text);
-    //       return true;
-    //     } catch (e) {
-    //       return false;
-    //     }
-    //   });
-
-    // const entries = messages.reduce((acc, message) => {
-    //   const data = JSON.parse(message);
-    //   data.forEach((item) => {
-    //     if (!acc[item.id]) {
-    //       acc[item.id] = {};
-    //     }
-    //     acc[item.id][item.type] = item.value;
-    //   });
-    //   return acc;
-    //   // return acc, findResult;
-    // }, {});
-
-    // console.log("Processed entries:", entries);
-    // const filteredEntries = Object.entries(entries).reduce(
-    //   (acc, [id, entry]) => {
-    //     if (entry.chatid === "-1002209368311") {
-    //       acc[id] = entry;
-    //     }
-    //     // return acc, findResult;
-    //     return acc;
-    //   },
-    //   {}
-    // );
-
-    // console.log("Filtered entries:", filteredEntries);
-    // res.status(200).json(filteredEntries);
-    console.log("Filtered entries:", resultArray);
-    res.status(200).json(resultArray);
+    console.log("Filtered entries:", resultDict);
+    res.status(200).json(resultDict);
   } catch (error) {
     console.error("Error fetching data from Telegram:", error);
     res.status(500).send("Failed to fetch data from Telegram");
