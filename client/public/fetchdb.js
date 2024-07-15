@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((data) => {
       console.log("Fetched data:", data);
+      // console.log("Fetched data:", JSON.stringify(data));
+
       const elements = document.querySelectorAll("[data-id][data-field]");
       elements.forEach((element) => {
         const id = element.getAttribute("data-id");

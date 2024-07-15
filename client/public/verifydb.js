@@ -20,6 +20,8 @@ function verifyInfo() {
         userInput.push({ type, value });
       });
 
+      console.log(userInput);
+
       // added key encryption
       const hashedPassword = CryptoJS.SHA256(userInput[1].value).toString(
         CryptoJS.enc.Hex
