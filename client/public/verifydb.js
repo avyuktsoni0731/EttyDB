@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const SECRET_KEY = process.env.SECRET_KEY; // Added secret key
 
 function verifyInfo() {

@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 function gatherInfo() {
   const inputs = Array.from(document.getElementsByClassName("userInput"));
   const SECRET_KEY = process.env.SECRET_KEY;
