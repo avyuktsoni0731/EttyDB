@@ -7,13 +7,13 @@ const { MongoClient } = require("mongodb");
 
 require("dotenv").config();
 
-const SECRET_KEY = "key";
-const TELEGRAM_BOT_TOKEN = "6894974714:AAEbOAZb0Oz1q8uXvMD6FqIAX1oTAZaZU7g";
-const TELEGRAM_BOT_TOKEN_2 = "6939916007:AAF5h7hwD2-E8YVWXSO9SWii20-wAQIovVQ";
-const TELEGRAM_CHAT_ID = "-1002209368311";
-const url =
-  "mongodb+srv://stk_as:sarthakavyukt@ettydb.zx8rijw.mongodb.net/?retryWrites=true&w=majority&appName=EttyDB"; // Replace with your MongoDB server URL if it's different
-const client = new MongoClient(url, {
+const SECRET_KEY = process.env.SECRET_KEY;
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_BOT_TOKEN_2 = process.env.TELEGRAM_BOT_TOKEN_2;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const url = process.env.MONGODB_URI;
+
+const client = new MongoClient(`${url}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -209,7 +209,7 @@ async function reloadData() {
 }
 
 // Serve the test.html file after reloading data
-app.get("/home", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     await reloadData();
     res.sendFile(__dirname + "/public/test.html");

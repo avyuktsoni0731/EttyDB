@@ -1,4 +1,6 @@
-const SECRET_KEY = "key"; // Added secret key
+require("dotenv").config();
+
+const SECRET_KEY = process.env.SECRET_KEY; // Added secret key
 
 function verifyInfo() {
   fetch("http://localhost:8080/fetchData")
