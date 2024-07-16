@@ -1,7 +1,7 @@
 const SECRET_KEY = process.env.SECRET_KEY; // Added secret key
 
 function verifyInfo() {
-  fetch("http://localhost:8080/fetchData")
+  fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
     .then((response) => response.json())
     .then((data) => {
       for (let item in data) {

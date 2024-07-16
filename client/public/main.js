@@ -25,7 +25,7 @@ function gatherInfo() {
     SECRET_KEY
   ).toString();
 
-  fetch("http://localhost:8080/storeData", {
+  fetch("https://coral-app-mjjt3.ondigitalocean.app/storeData", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
