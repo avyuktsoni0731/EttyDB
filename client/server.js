@@ -222,3 +222,30 @@ app.get("/", async (req, res) => {
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);
 });
+
+app.post("/storeData", async (req, res) => {
+  try {
+    const userData = req.body.data;
+    const SECRET_KEY = process.env.SECRET_KEY;
+
+    // Hash the password if present
+    userData.forEach((item) => {
+      if (item.type.toLowerCase() === "password") {
+        item.value = CryptoJS.SHA256(item.value).toString(CryptoJS.enc.Hex);
+      }
+    });
+
+    // Encrypt the entire userData
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(userData),
+      SECRET_KEY
+    ).toString();
+
+    // ... rest of your server-side logic to store the encryptedData
+
+    res.status(200).send("Data stored successfully");
+  } catch (error) {
+    console.error("Error storing data:", error);
+    res.status(500).send("Failed to store data");
+  }
+});
