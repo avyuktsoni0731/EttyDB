@@ -42,7 +42,6 @@
 //       console.error("Error storing data:", error);
 //     });
 // }
-
 function gatherInfo() {
   const inputs = Array.from(document.getElementsByClassName("userInput"));
   const userInput = [];
@@ -73,11 +72,18 @@ function gatherInfo() {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Failed to store data");
+        return response.json().then((err) => {
+          throw err;
+        });
       }
-      console.log("Data stored successfully");
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      alert("Data stored successfully!");
     })
     .catch((error) => {
-      console.error("Error storing data:", error);
+      console.error("Detailed error:", error);
+      alert("An error occurred. Please check the console for details.");
     });
 }

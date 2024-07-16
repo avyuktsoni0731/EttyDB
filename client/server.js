@@ -75,7 +75,7 @@ app.post("/storeData", async (req, res) => {
 
   if (!req.body || !req.body.data) {
     console.error("Invalid request body");
-    return res.status(400).send("Invalid request: missing data");
+    return res.status(400).json({ error: "Invalid request: missing data" });
   }
 
   let conn;
@@ -104,7 +104,7 @@ app.post("/storeData", async (req, res) => {
 
     // Find chat_id and text_id
     const chatIdItem = userData.find((item) => item.type === "chatid");
-    const idItem = userData.find((item) => item.type === "id");
+    const idItem = userData.find((item) => item.id);
 
     if (!chatIdItem || !idItem) {
       throw new Error("Missing chatid or id in user data");
@@ -112,7 +112,7 @@ app.post("/storeData", async (req, res) => {
 
     const insertResult = await collection.insertOne({
       chat_id: chatIdItem.value,
-      text_id: idItem.value,
+      text_id: idItem.id,
       text: encryptedData,
     });
 
@@ -137,10 +137,14 @@ app.post("/storeData", async (req, res) => {
 
     console.log("Message sent to Telegram");
 
-    res.status(200).send("Data stored and sent successfully");
+    res.status(200).json({ message: "Data stored and sent successfully" });
   } catch (error) {
-    console.error("Error in /storeData:", error);
-    res.status(500).send(`Failed to store data: ${error.message}`);
+    console.error("Detailed error in /storeData:", error);
+    res.status(500).json({
+      error: "Failed to store data",
+      details: error.message,
+      stack: error.stack,
+    });
   } finally {
     if (conn) {
       await conn.close();
