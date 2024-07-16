@@ -2,10 +2,6 @@ function verifyInfo() {
   fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
     .then((response) => response.json())
     .then((data) => {
-      for (let item in data) {
-        console.log(data[item].username);
-        console.log(data[item].password);
-      }
       const inputs = Array.from(document.getElementsByClassName("verifyInput"));
       const userInput = [];
 

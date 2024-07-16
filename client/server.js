@@ -24,52 +24,6 @@ const collection = db.collection("test");
 app.use(bodyParser.json());
 app.use(express.static("public")); // Serve static files from the "public" directory
 
-// app.post("/storeData", async (req, res) => {
-//   try {
-//     const encryptedData = req.body.data;
-
-//     // Decrypt data
-//     const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
-//     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
-//     // Construct message for Telegram
-//     const message = JSON.stringify(decryptedData);
-
-//     // MongoDB
-//     await client.connect();
-//     console.log("Connected successfully to server");
-
-//     const insertResult = await collection.insertOne({
-//       chat_id: TELEGRAM_CHAT_ID,
-//       text_id: decryptedData[0]["id"],
-//       text: decryptedData,
-//     });
-
-//     // Send message to Telegram
-//     const telegramApiUrl2 = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN_2}/sendMessage`;
-//     const response = await fetch(telegramApiUrl2, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         chat_id: TELEGRAM_CHAT_ID,
-//         text: message,
-//       }),
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to send message to Telegram");
-//     }
-//   } catch (error) {
-//     console.error("Error storing data:", error);
-//     res.status(500).send("Failed to store data");
-//   } finally {
-//     await client.close();
-//     console.log("Server closed");
-//   }
-// });
-
 app.post("/storeData", async (req, res) => {
   console.log("Received request to /storeData");
 
@@ -87,7 +41,7 @@ app.post("/storeData", async (req, res) => {
     const collection = db.collection("test");
 
     const userData = req.body.data;
-    console.log("Received user data:", JSON.stringify(userData));
+    // console.log("Received user data:", JSON.stringify(userData));
 
     // Hash password if present
     userData.forEach((item) => {
@@ -117,7 +71,7 @@ app.post("/storeData", async (req, res) => {
       // text: encryptedData,
     });
 
-    console.log("Data inserted to MongoDB:", insertResult.insertedId);
+    // console.log("Data inserted to MongoDB:", insertResult.insertedId);
 
     // Send to Telegram
     const telegramMessage = JSON.stringify(userData);
@@ -171,7 +125,7 @@ app.get("/fetchData", async (req, res) => {
       });
     });
 
-    console.log("Filtered entries:", resultDict);
+    // console.log("Filtered entries:", resultDict);
     res.status(200).json(resultDict);
   } catch (error) {
     console.error("Error fetching data from Telegram:", error);
@@ -198,7 +152,7 @@ app.get("/editData", async (req, res) => {
     }
 
     const data = await response.json();
-    console.log("Raw data from Telegram:", data);
+    // console.log("Raw data from Telegram:", data);
 
     const messages = data.result
       .filter(
@@ -222,7 +176,7 @@ app.get("/editData", async (req, res) => {
         }
       });
 
-    console.log("Filtered messages:", messages);
+    // console.log("Filtered messages:", messages);
 
     const entries = messages.reduce((acc, message) => {
       const data = JSON.parse(message);
@@ -235,7 +189,7 @@ app.get("/editData", async (req, res) => {
       return acc;
     }, {});
 
-    console.log("Processed entries:", entries);
+    // console.log("Processed entries:", entries);
 
     await client.connect();
     console.log("Connected successfully to server");

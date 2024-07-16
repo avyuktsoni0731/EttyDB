@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
     .then((response) => response.json())
     .then((data) => {
-      console.log("Fetched entries:", JSON.stringify(data));
+      // console.log("Fetched entries:", JSON.stringify(data));
 
       const elements = document.querySelectorAll("[data-id][data-field]");
       elements.forEach((element) => {
