@@ -22,7 +22,7 @@ const db = client.db("EttyDB");
 const collection = db.collection("test");
 
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static("public")); // Serve static files from the "public" directory
 
 app.post("/storeData", async (req, res) => {
   try {
@@ -35,7 +35,7 @@ app.post("/storeData", async (req, res) => {
     // Construct message for Telegram
     const message = JSON.stringify(decryptedData);
 
-    //MongoDB
+    // MongoDB
     await client.connect();
     console.log("Connected successfully to server");
 
@@ -44,10 +44,10 @@ app.post("/storeData", async (req, res) => {
       text_id: decryptedData[0]["id"],
       text: decryptedData,
     });
-    //
+
     // Send message to Telegram
     const telegramApiUrl2 = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN_2}/sendMessage`;
-    const respons = await fetch(telegramApiUrl2, {
+    const response = await fetch(telegramApiUrl2, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ app.post("/storeData", async (req, res) => {
       }),
     });
 
-    if (!respons.ok) {
+    if (!response.ok) {
       throw new Error("Failed to send message to Telegram");
     }
   } catch (error) {
@@ -96,10 +96,6 @@ app.get("/fetchData", async (req, res) => {
     client.close();
     console.log("Server closed");
   }
-});
-
-app.listen(port, () => {
-  console.log(`Backend server running at http://localhost:${port}`);
 });
 
 app.get("/editData", async (req, res) => {
@@ -191,4 +187,38 @@ app.get("/editData", async (req, res) => {
     await client.close();
     console.log("Server closed");
   }
+});
+
+async function reloadData() {
+  const editDataUrl = "http://localhost:8080/editData";
+  const fetchDataUrl = "http://localhost:8080/fetchData";
+
+  // Fetch editData
+  const editDataResponse = await fetch(editDataUrl, { method: "GET" });
+  if (!editDataResponse.ok) {
+    throw new Error("Failed to reload editData");
+  }
+
+  // Fetch fetchData
+  const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
+  if (!fetchDataResponse.ok) {
+    throw new Error("Failed to reload fetchData");
+  }
+
+  return true;
+}
+
+// Serve the test.html file after reloading data
+app.get("/home", async (req, res) => {
+  try {
+    await reloadData();
+    res.sendFile(__dirname + "/public/test.html");
+  } catch (error) {
+    console.error("Error reloading data before serving test.html:", error);
+    res.status(500).send("Failed to load test.html");
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Backend server running at http://localhost:${port}`);
 });
