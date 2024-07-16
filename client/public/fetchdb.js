@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch("http://localhost:8080/fetchData")
     .then((response) => response.json())
     .then((data) => {
-      console.log("Fetched data:", JSON.stringify(data));
+      console.log("Fetched entries:", JSON.stringify(data));
 
       const elements = document.querySelectorAll("[data-id][data-field]");
       elements.forEach((element) => {

