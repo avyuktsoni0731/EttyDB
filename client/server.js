@@ -71,7 +71,6 @@ app.post("/storeData", async (req, res) => {
 });
 
 app.get("/fetchData", async (req, res) => {
-  const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`;
   try {
     const resultDict = {};
     const findResult = collection.find({ chat_id: TELEGRAM_CHAT_ID });
@@ -95,4 +94,62 @@ app.get("/fetchData", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);
+});
+
+app.get("/editData", async (req, res) => {
+  const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`;
+  try {
+      const fetch = await import("node-fetch");
+      const response = await fetch.default(telegramApiUrl, {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error("Failed to fetch data from Telegram");
+      }
+
+      const data = await response.json();
+      console.log('Raw data from Telegram:', data);
+
+      const messages = data.result
+      .filter(update => (update.channel_post && update.channel_post.text) || (update.edited_channel_post && update.edited_channel_post.text))
+      .map(update => {
+        if (update.channel_post) {
+          return update.channel_post.text;
+        } else if (update.edited_channel_post) {
+          return update.edited_channel_post.text;
+        }
+      })
+      .filter(text => {
+        try {
+          JSON.parse(text);
+          return true;
+              } catch (e) {
+                  return false;
+              }
+          });
+
+      console.log('Filtered messages:', messages);
+
+      const entries = messages.reduce((acc, message) => {
+          const data = JSON.parse(message);
+          data.forEach(item => {
+              if (!acc[item.id]) {
+                  acc[item.id] = {};
+              }
+              acc[item.id][item.type] = item.value;
+          });
+          return acc;
+      }, {});
+
+      console.log('Processed entries:', entries);
+
+      res.status(200).json(entries);
+  } catch (error) {
+      console.error("Error fetching data from Telegram:", error);
+      res.status(500).send("Failed to fetch data from Telegram");
+  }
 });
