@@ -113,7 +113,8 @@ app.post("/storeData", async (req, res) => {
     const insertResult = await collection.insertOne({
       chat_id: chatIdItem.value,
       text_id: idItem.id,
-      text: encryptedData,
+      text: userData,
+      // text: encryptedData,
     });
 
     console.log("Data inserted to MongoDB:", insertResult.insertedId);
