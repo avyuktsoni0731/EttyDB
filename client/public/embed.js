@@ -1007,7 +1007,7 @@
     // Add TELEGRAM_CHAT_ID to userInput
     userInput.push({ id: id, type: "chatid", value: chatId });
 
-    fetch("http://localhost:8080/storeData", {
+    fetch("https://coral-app-mjjt3.ondigitalocean.app/storeData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1033,7 +1033,7 @@
 
   // Fetchdb.js content
   document.addEventListener("DOMContentLoaded", function () {
-    fetch("http://localhost:8080/fetchData")
+    fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
       .then((response) => response.json())
       .then((data) => {
         const elements = document.querySelectorAll("[data-id][data-field]");
@@ -1052,7 +1052,7 @@
 
   // Verifydb.js content
   function verifyInfo() {
-    fetch("http://localhost:8080/fetchData")
+    fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
       .then((response) => response.json())
       .then((data) => {
         const inputs = Array.from(

@@ -46,11 +46,11 @@
       document.addEventListener("DOMContentLoaded", function () {
         const chatId = prompt("Please enter your Telegram chat ID:");
         if (chatId) {
-          const scriptTag = `<script src="http://localhost:8080/embed.js?chat_id=${chatId}"><\/script>`;
+          const scriptTag = `<script src="https://coral-app-mjjt3.ondigitalocean.app/embed.js?chat_id=${chatId}"><\/script>`;
           document.getElementById("scriptTagContainer").textContent = scriptTag;
 
           const script = document.createElement("script");
-          script.src = `http://localhost:8080/embed.js?chat_id=${chatId}`;
+          script.src = `https://coral-app-mjjt3.ondigitalocean.app/embed.js?chat_id=${chatId}`;
           document.body.appendChild(script);
 
           // Provide instructions to the user
