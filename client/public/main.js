@@ -19,7 +19,7 @@ function gatherInfo() {
   // Add TELEGRAM_CHAT_ID to userInput
   userInput.push({ id: id, type: "chatid", value: TELEGRAM_CHAT_ID });
 
-  fetch("https://coral-app-mjjt3.ondigitalocean.app/storeData", {
+  fetch("http://localhost:8080/storeData", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

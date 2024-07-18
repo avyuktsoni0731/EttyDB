@@ -137,7 +137,7 @@ app.get("/fetchData", async (req, res) => {
 });
 
 app.get("/editData", async (req, res) => {
-  const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`;
+  const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKE_2}/getUpdates`;
   try {
     const fetch = await import("node-fetch");
     const response = await fetch.default(telegramApiUrl, {
