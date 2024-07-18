@@ -227,29 +227,29 @@ app.get("/editData", async (req, res) => {
   }
 });
 
-async function reloadData() {
-  const editDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/editData";
-  const fetchDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/fetchData";
+// async function reloadData() {
+//   const editDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/editData";
+//   const fetchDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/fetchData";
 
-  // Fetch editData
-  const editDataResponse = await fetch(editDataUrl, { method: "GET" });
-  if (!editDataResponse.ok) {
-    throw new Error("Failed to reload editData");
-  }
+//   // Fetch editData
+//   const editDataResponse = await fetch(editDataUrl, { method: "GET" });
+//   if (!editDataResponse.ok) {
+//     throw new Error("Failed to reload editData");
+//   }
 
-  // Fetch fetchData
-  const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
-  if (!fetchDataResponse.ok) {
-    throw new Error("Failed to reload fetchData");
-  }
+//   // Fetch fetchData
+//   const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
+//   if (!fetchDataResponse.ok) {
+//     throw new Error("Failed to reload fetchData");
+//   }
 
-  return true;
-}
+//   return true;
+// }
 
 // Serve the test.html file after reloading data
 app.get("/", async (req, res) => {
   try {
-    await reloadData();
+    // await reloadData();
     res.sendFile(__dirname + "/public/test.html");
   } catch (error) {
     console.error("Error reloading data before serving test.html:", error);
