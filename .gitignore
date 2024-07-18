@@ -1,3 +1,4 @@
 /client/node_modules
 .env
 /backup
+/client/public/test2.html

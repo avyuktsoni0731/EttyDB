@@ -34,11 +34,37 @@
       button:hover {
         background-color: #45a049;
       }
+      #embedInstructions {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
     </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const chatId = prompt("Please enter your Telegram chat ID:");
+        if (chatId) {
+          const scriptTag = `<script src="http://localhost:8080/embed.js?chat_id=${chatId}"><\/script>`;
+          document.getElementById("scriptTagContainer").textContent = scriptTag;
+
+          const script = document.createElement("script");
+          script.src = `http://localhost:8080/embed.js?chat_id=${chatId}`;
+          document.body.appendChild(script);
+
+          // Provide instructions to the user
+          document.getElementById(
+            "embedInstructions"
+          ).textContent = `To embed this service into your HTML, add the following script tag to your HTML file: ${scriptTag}`;
+        }
+      });
+    </script>
   </head>
 
   <body>
     <h1>Test CDN-hosted JavaScript Function</h1>
+    <div id="scriptTagContainer"></div>
     <input type="text" class="userInput" placeholder="username" />
     <input type="password" class="userInput" placeholder="password" />
     <input type="email" class="userInput" placeholder="email" />
@@ -46,5 +72,6 @@
     <input type="text" class="verifyInput" placeholder="username" />
     <input type="password" class="verifyInput" placeholder="password" />
     <button onclick="verifyInfo()">Verify</button>
+    <div id="embedInstructions"></div>
   </body>
 </html>

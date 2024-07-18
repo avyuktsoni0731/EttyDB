@@ -3,8 +3,10 @@ function gatherInfo() {
   const userInput = [];
   const id = Date.now().toString();
 
-  // Prompt user for TELEGRAM_CHAT_ID
-  const TELEGRAM_CHAT_ID = prompt("Please enter your Telegram chat ID:");
+  const scriptTag = document.querySelector('script[src*="embed.js"]');
+  const urlParams = new URLSearchParams(scriptTag.src.split("?")[1]);
+  const TELEGRAM_CHAT_ID = urlParams.get("chat_id");
+
   if (!TELEGRAM_CHAT_ID) {
     alert("Telegram chat ID is required.");
     return;

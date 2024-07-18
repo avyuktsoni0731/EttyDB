@@ -24,6 +24,25 @@ const collection = db.collection("test");
 app.use(bodyParser.json());
 app.use(express.static("public")); // Serve static files from the "public" directory
 
+app.get("/embed.js", (req, res) => {
+  const chatId = req.query.chat_id;
+  if (!chatId) {
+    res.status(400).send("Chat ID is required");
+    return;
+  }
+
+  const scriptContent = `
+    // embed.js content
+    document.addEventListener("DOMContentLoaded", function() {
+      console.log("Embed script loaded with chat ID: ${chatId}");
+      window.TELEGRAM_CHAT_ID = "${chatId}";
+    });
+  `;
+
+  res.setHeader("Content-Type", "application/javascript");
+  res.send(scriptContent);
+});
+
 app.post("/storeData", async (req, res) => {
   console.log("Received request to /storeData");
 
