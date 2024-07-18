@@ -12,7 +12,6 @@ app.use(cors());
 const SECRET_KEY = process.env.SECRET_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_BOT_TOKEN_2 = process.env.TELEGRAM_BOT_TOKEN_2;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const url = process.env.MONGODB_URI;
 
 const client = new MongoClient(`${url}`, {
@@ -130,12 +129,18 @@ app.post("/storeData", async (req, res) => {
 });
 
 app.get("/fetchData", async (req, res) => {
+  const chatId = req.query.chat_id;
+
+  if (!chatId) {
+    return res.status(400).json({ error: "Chat ID is required" });
+  }
+
   try {
     await client.connect();
     console.log("Connected successfully to server");
 
     const resultDict = {};
-    const findResult = collection.find({ chat_id: TELEGRAM_CHAT_ID });
+    const findResult = collection.find({ chat_id: chatId });
     await findResult.forEach((doc) => {
       const text_id = doc.text_id;
       if (!resultDict[text_id]) {
