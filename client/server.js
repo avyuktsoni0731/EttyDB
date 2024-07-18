@@ -2,10 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8080;
+const cors = require("cors");
 const CryptoJS = require("crypto-js");
 const { MongoClient } = require("mongodb");
 
 require("dotenv").config();
+app.use(cors());
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
