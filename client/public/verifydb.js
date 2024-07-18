@@ -1,5 +1,5 @@
 function verifyInfo() {
-  fetch("http://localhost:8080/fetchData")
+  fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
     .then((response) => response.json())
     .then((data) => {
       const inputs = Array.from(document.getElementsByClassName("verifyInput"));

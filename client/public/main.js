@@ -20,7 +20,6 @@ function gatherInfo() {
   userInput.push({ id: id, type: "chatid", value: TELEGRAM_CHAT_ID });
 
   fetch("http://localhost:8080/storeData", {
-    // fetch("https://coral-app-mjjt3.ondigitalocean.app/storeData", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
