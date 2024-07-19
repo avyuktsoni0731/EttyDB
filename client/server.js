@@ -254,8 +254,8 @@ app.get("/editData", async (req, res) => {
 });
 
 async function reloadData() {
-  const editDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/editData";
-  const fetchDataUrl = "https://coral-app-mjjt3.ondigitalocean.app/fetchData";
+  const editDataUrl = "https://etty-db.vercel.app/editData";
+  const fetchDataUrl = "https://etty-db.vercel.app/fetchData";
 
   // Fetch editData
   const editDataResponse = await fetch(editDataUrl, { method: "GET" });
