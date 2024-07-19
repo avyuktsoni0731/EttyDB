@@ -1007,7 +1007,7 @@
     // Add TELEGRAM_CHAT_ID to userInput
     userInput.push({ id: id, type: "chatid", value: chatId });
 
-    fetch("https://coral-app-mjjt3.ondigitalocean.app/storeData", {
+    fetch("https://etty-db.vercel.app/storeData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1033,9 +1033,7 @@
 
   // Fetchdb.js content
   document.addEventListener("DOMContentLoaded", function () {
-    fetch(
-      `https://coral-app-mjjt3.ondigitalocean.app/fetchData?chat_id=${chatId}`
-    )
+    fetch(`https://etty-db.vercel.app/fetchData?chat_id=${chatId}`)
       .then((response) => response.json())
       .then((data) => {
         const elements = document.querySelectorAll("[data-id][data-field]");
@@ -1054,9 +1052,7 @@
 
   // Verifydb.js content
   function verifyInfo() {
-    fetch(
-      `https://coral-app-mjjt3.ondigitalocean.app/fetchData?chat_id=${chatId}`
-    )
+    fetch(`https://etty-db.vercel.app/fetchData?chat_id=${chatId}`)
       .then((response) => response.json())
       .then((data) => {
         const inputs = Array.from(

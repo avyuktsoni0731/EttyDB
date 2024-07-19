@@ -1,5 +1,5 @@
 function verifyInfo() {
-  fetch("https://coral-app-mjjt3.ondigitalocean.app/fetchData")
+  fetch("https://etty-db.vercel.app/fetchData")
     .then((response) => response.json())
     .then((data) => {
       const inputs = Array.from(document.getElementsByClassName("verifyInput"));
