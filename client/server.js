@@ -5,9 +5,11 @@ const port = 8080;
 const cors = require("cors");
 const CryptoJS = require("crypto-js");
 const { MongoClient } = require("mongodb");
+const path = require("path");
 
 require("dotenv").config();
 app.use(cors());
+app.use(express.static(path.join(__dirname, "public")));
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
