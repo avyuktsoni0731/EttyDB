@@ -255,9 +255,9 @@ app.get("/editData", async (req, res) => {
   }
 });
 
-async function reloadData() {
-  const editDataUrl = "https://etty-db.vercel.app/editData";
-  const fetchDataUrl = "https://etty-db.vercel.app/fetchData";
+async function reloadData(chatId) {
+  const editDataUrl = `https://etty-db.vercel.app/editData`;
+  const fetchDataUrl = `https://etty-db.vercel.app/fetchData?chat_id=${chatId}`;
 
   // Fetch editData
   const editDataResponse = await fetch(editDataUrl, { method: "GET" });
@@ -276,8 +276,10 @@ async function reloadData() {
 
 // Serve the test.html file after reloading data
 app.get("/", async (req, res) => {
+  const chatId = req.query.chat_id;
+
   try {
-    // await reloadData();
+    await reloadData(chatId);
     res.sendFile(__dirname + "/public/test.html");
   } catch (error) {
     console.error("Error reloading data before serving test.html:", error);
