@@ -3,43 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test CDN-hosted JavaScript Function</title>
+    <title>EttyDB</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="main.js"></script>
     <script src="fetchdb.js"></script>
     <script src="verifydb.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 500px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      input {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      }
-      button {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #45a049;
-      }
-      #embedInstructions {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #f9f9f9;
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+      .font-montserrat {
+        font-family: "Montserrat", sans-serif;
       }
       .hidden {
         display: none;
@@ -59,9 +35,17 @@
           // Provide instructions to the user
           document.getElementById(
             "embedInstructions"
-          ).textContent = `To embed this service into your HTML, add the following script tag to your HTML file: ${scriptTag}`;
+          ).textContent = `To embed this service into your HTML, add the following script tag to your HTML file:`;
+
+          document
+            .getElementById("scriptTagContainer")
+            .classList.remove("hidden");
+          document
+            .getElementById("copyButtonContainer")
+            .classList.remove("hidden");
         }
       });
+
       function reloadData() {
         const chatId = window.TELEGRAM_CHAT_ID;
         if (!chatId) {
@@ -84,20 +68,52 @@
             alert("Failed to reload data");
           });
       }
+
+      function copyToClipboard() {
+        const scriptTag =
+          document.getElementById("scriptTagContainer").textContent;
+        navigator.clipboard
+          .writeText(scriptTag)
+          .then(() => {
+            alert("Script tag copied to clipboard");
+          })
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
+          });
+      }
     </script>
   </head>
-
-  <body>
-    <h1>Test CDN-hosted JavaScript Function</h1>
-    <div id="scriptTagContainer" class="hidden"></div>
-    <input type="text" class="userInput" placeholder="username" />
-    <input type="password" class="userInput" placeholder="password" />
-    <input type="email" class="userInput" placeholder="email" />
-    <button onclick="gatherInfo()">Submit</button>
-    <input type="text" class="verifyInput" placeholder="username" />
-    <input type="password" class="verifyInput" placeholder="password" />
-    <button onclick="verifyInfo()">Verify</button>
-    <div id="embedInstructions"></div>
-    <button onclick="reloadData()">Reload Data</button>
+  <body class="bg-gray-100 text-gray-900">
+    <div
+      class="max-w-2xl mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white shadow-lg rounded-lg mt-10"
+    >
+      <h1
+        class="text-3xl font-montserrat font-bold mb-6 text-center text-green-600"
+      >
+        EttyDB
+      </h1>
+      <div
+        id="embedInstructions"
+        class="bg-gray-100 p-4 rounded mb-6 font-montserrat text-md font-semibold"
+      ></div>
+      <div
+        id="scriptTagContainer"
+        class="bg-gray-200 p-4 rounded mb-4 hidden font-mono"
+      ></div>
+      <div id="copyButtonContainer" class="hidden text-right mb-6">
+        <button
+          onclick="copyToClipboard()"
+          class="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 font-mono text-sm"
+        >
+          Copy Script Tag
+        </button>
+      </div>
+      <button
+        onclick="reloadData()"
+        class="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300 font-mono"
+      >
+        Reload Data
+      </button>
+    </div>
   </body>
 </html>
