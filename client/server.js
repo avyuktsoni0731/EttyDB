@@ -256,34 +256,51 @@ app.get("/editData", async (req, res) => {
 });
 
 async function reloadData(chatId) {
+  // const editDataUrl = `http://localhost:8080/editData`;
+  // const fetchDataUrl = `http://localhost:8080/fetchData?chat_id=${chatId}`;
   const editDataUrl = `https://etty-db.vercel.app/editData`;
   const fetchDataUrl = `https://etty-db.vercel.app/fetchData?chat_id=${chatId}`;
 
-  // Fetch editData
-  const editDataResponse = await fetch(editDataUrl, { method: "GET" });
-  if (!editDataResponse.ok) {
-    throw new Error("Failed to reload editData");
-  }
+  try {
+    // Fetch editData
+    const editDataResponse = await fetch(editDataUrl, { method: "GET" });
+    if (!editDataResponse.ok) {
+      const errorText = await editDataResponse.text();
+      console.error(`Failed to reload editData: ${errorText}`);
+      throw new Error(
+        `Failed to reload editData: ${editDataResponse.statusText}`
+      );
+    }
 
-  // Fetch fetchData
-  const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
-  if (!fetchDataResponse.ok) {
-    throw new Error("Failed to reload fetchData");
+    // Fetch fetchData
+    const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
+    if (!fetchDataResponse.ok) {
+      const errorText = await fetchDataResponse.text();
+      console.error(`Failed to reload fetchData: ${errorText}`);
+      throw new Error(
+        `Failed to reload fetchData: ${fetchDataResponse.statusText}`
+      );
+    }
+    return true;
+  } catch (error) {
+    console.error("Error reloading data:", error);
+    throw error;
   }
-
-  return true;
 }
 
-// Serve the test.html file after reloading data
 app.get("/", async (req, res) => {
+  res.sendFile(__dirname + "/public/test.html");
+});
+
+app.get("/reloadData", async (req, res) => {
   const chatId = req.query.chat_id;
 
   try {
     await reloadData(chatId);
-    res.sendFile(__dirname + "/public/test.html");
+    res.status(200).send("Data reloaded successfully");
   } catch (error) {
-    console.error("Error reloading data before serving test.html:", error);
-    res.status(500).send("Failed to load test.html");
+    console.error("Error reloading data:", error);
+    res.status(500).send("Failed to reload data");
   }
 });
 

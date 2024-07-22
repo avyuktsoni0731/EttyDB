@@ -1007,6 +1007,7 @@
     // Add TELEGRAM_CHAT_ID to userInput
     userInput.push({ id: id, type: "chatid", value: chatId });
 
+    // fetch("http://localhost:8080/storeData", {
     fetch("https://etty-db.vercel.app/storeData", {
       method: "POST",
       headers: {
@@ -1033,6 +1034,7 @@
 
   // Fetchdb.js content
   document.addEventListener("DOMContentLoaded", function () {
+    // fetch(`http://localhost:8080/fetchData?chat_id=${chatId}`)
     fetch(`https://etty-db.vercel.app/fetchData?chat_id=${chatId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -1052,6 +1054,7 @@
 
   // Verifydb.js content
   function verifyInfo() {
+    // fetch(`http://localhost:8080/fetchData?chat_id=${chatId}`)
     fetch(`https://etty-db.vercel.app/fetchData?chat_id=${chatId}`)
       .then((response) => response.json())
       .then((data) => {

@@ -41,6 +41,9 @@
         border-radius: 4px;
         background-color: #f9f9f9;
       }
+      .hidden {
+        display: none;
+      }
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -59,12 +62,34 @@
           ).textContent = `To embed this service into your HTML, add the following script tag to your HTML file: ${scriptTag}`;
         }
       });
+      function reloadData() {
+        const chatId = window.TELEGRAM_CHAT_ID;
+        if (!chatId) {
+          alert("Chat ID is not set");
+          return;
+        }
+
+        fetch(`/reloadData?chat_id=${chatId}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to reload data");
+            }
+            return response.text();
+          })
+          .then((data) => {
+            alert("Data reloaded successfully");
+          })
+          .catch((error) => {
+            console.error("Error reloading data:", error);
+            alert("Failed to reload data");
+          });
+      }
     </script>
   </head>
 
   <body>
     <h1>Test CDN-hosted JavaScript Function</h1>
-    <div id="scriptTagContainer"></div>
+    <div id="scriptTagContainer" class="hidden"></div>
     <input type="text" class="userInput" placeholder="username" />
     <input type="password" class="userInput" placeholder="password" />
     <input type="email" class="userInput" placeholder="email" />
@@ -73,5 +98,6 @@
     <input type="password" class="verifyInput" placeholder="password" />
     <button onclick="verifyInfo()">Verify</button>
     <div id="embedInstructions"></div>
+    <button onclick="reloadData()">Reload Data</button>
   </body>
 </html>
