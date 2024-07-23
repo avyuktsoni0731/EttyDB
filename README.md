@@ -66,7 +66,7 @@ Start integrating your database entries into your website:
 
 Begin managing your database entries through Telegram (Store, Fetch, Update, Delete):
 
-- **Store**: Create HTML tags on your website to capture user input. Add classes in the specified format and include the `gatherInfo()` function in your submit button.
+- **Store**: Create HTML tags on your website to capture user input. Add classes in the specified format and include the `gatherInfo()` function in your submit button. Make sure to add a placeholder to not get empty type value on telegram.
  Example:
 ```html 
     <input type="text" class="userInput" placeholder="username" />
