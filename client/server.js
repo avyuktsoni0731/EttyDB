@@ -229,13 +229,6 @@ app.get("/editData", async (req, res) => {
         const document = {
           chat_id: entry.chatid,
           text_id: text_id,
-          // text: [
-          //   { id: text_id, type: "username", value: entry.username },
-          //   { id: text_id, type: "password", value: entry.password },
-          //   { id: text_id, type: "email", value: entry.email },
-          //   { id: text_id, type: "chatid", value: entry.chatid },
-          // ],
-          // chatid: entry.chatid,
           text: [],
         };
         for (const [key, value] of Object.entries(entry)) {
