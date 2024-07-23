@@ -5,9 +5,11 @@ const port = 8080;
 const cors = require("cors");
 const CryptoJS = require("crypto-js");
 const { MongoClient } = require("mongodb");
+const path = require("path");
 
 require("dotenv").config();
 app.use(cors());
+app.use(express.static(path.join(__dirname, "public")));
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -253,33 +255,52 @@ app.get("/editData", async (req, res) => {
   }
 });
 
-async function reloadData() {
-  const editDataUrl = "https://etty-db.vercel.app/editData";
-  const fetchDataUrl = "https://etty-db.vercel.app/fetchData";
+async function reloadData(chatId) {
+  // const editDataUrl = `http://localhost:8080/editData`;
+  // const fetchDataUrl = `http://localhost:8080/fetchData?chat_id=${chatId}`;
+  const editDataUrl = `https://etty-db.vercel.app/editData`;
+  const fetchDataUrl = `https://etty-db.vercel.app/fetchData?chat_id=${chatId}`;
 
-  // Fetch editData
-  const editDataResponse = await fetch(editDataUrl, { method: "GET" });
-  if (!editDataResponse.ok) {
-    throw new Error("Failed to reload editData");
+  try {
+    // Fetch editData
+    const editDataResponse = await fetch(editDataUrl, { method: "GET" });
+    if (!editDataResponse.ok) {
+      const errorText = await editDataResponse.text();
+      console.error(`Failed to reload editData: ${errorText}`);
+      throw new Error(
+        `Failed to reload editData: ${editDataResponse.statusText}`
+      );
+    }
+
+    // Fetch fetchData
+    const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
+    if (!fetchDataResponse.ok) {
+      const errorText = await fetchDataResponse.text();
+      console.error(`Failed to reload fetchData: ${errorText}`);
+      throw new Error(
+        `Failed to reload fetchData: ${fetchDataResponse.statusText}`
+      );
+    }
+    return true;
+  } catch (error) {
+    console.error("Error reloading data:", error);
+    throw error;
   }
-
-  // Fetch fetchData
-  const fetchDataResponse = await fetch(fetchDataUrl, { method: "GET" });
-  if (!fetchDataResponse.ok) {
-    throw new Error("Failed to reload fetchData");
-  }
-
-  return true;
 }
 
-// Serve the test.html file after reloading data
 app.get("/", async (req, res) => {
+  res.sendFile(__dirname + "/public/test.html");
+});
+
+app.get("/reloadData", async (req, res) => {
+  const chatId = req.query.chat_id;
+
   try {
-    // await reloadData();
-    res.sendFile(__dirname + "/public/test.html");
+    await reloadData(chatId);
+    res.status(200).send("Data reloaded successfully");
   } catch (error) {
-    console.error("Error reloading data before serving test.html:", error);
-    res.status(500).send("Failed to load test.html");
+    console.error("Error reloading data:", error);
+    res.status(500).send("Failed to reload data");
   }
 });
 
