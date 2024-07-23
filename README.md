@@ -33,17 +33,17 @@ Set up a Telegram channel to manage your database entries:
 - ![image](https://github.com/stktyagi/EttyDB/blob/main/images/Screenshot%202024-07-23%20201722.png)
   
 - Make sure your channel is private to make sure your site data is private to you.
-- ![image](https://github.com/user-attachments/assets/56d09f6a-d31a-4bcc-9463-db118621c0e8)
+- ![image](https://github.com/stktyagi/EttyDB/blob/main/images/2.png)
   
 - Start [`EttyDB`](https://web.telegram.org/k/#@EttyCDN_bot) and [`EttyFetch`](https://web.telegram.org/k/#@EttyFetch_bot) bots by /start command on their chat.
 - Add [`EttyDB`](https://web.telegram.org/k/#@EttyCDN_bot) and [`EttyFetch`](https://web.telegram.org/k/#@EttyFetch_bot) bots as administrators to your channel.
   
-- ![image](https://github.com/user-attachments/assets/62277173-f534-4af7-b95b-7af94d77abfe)
+- ![image](https://github.com/stktyagi/EttyDB/blob/main/images/3.png)
   
-- ![image](https://github.com/user-attachments/assets/678263fd-6ee6-4fea-960d-e425610773f7)
+- ![image](https://github.com/stktyagi/EttyDB/blob/main/images/4.png)
 
 - Click on Add Administrator and add both bots like so.
-- ![image](https://github.com/user-attachments/assets/4d95d3f6-e8ac-4822-b516-a57dff81b6c0)
+- ![image](https://github.com/stktyagi/EttyDB/blob/main/images/5.png)
 
 
 
