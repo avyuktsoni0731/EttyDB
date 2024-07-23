@@ -23,7 +23,9 @@
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const chatId = prompt("Please enter your Telegram chat ID:");
+        const inputtedChatId = prompt("Please enter your Telegram chat ID:");
+        const concatId = "-100";
+        const chatId = concatId.concat(inputtedChatId);
         if (chatId) {
           const scriptTag = `<script src="https://etty-db.vercel.app/embed.js?chat_id=${chatId}"><\/script>`;
           document.getElementById("scriptTagContainer").textContent = scriptTag;
