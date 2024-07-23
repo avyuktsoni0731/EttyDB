@@ -235,6 +235,7 @@ app.get("/editData", async (req, res) => {
           //   { id: text_id, type: "email", value: entry.email },
           //   { id: text_id, type: "chatid", value: entry.chatid },
           // ],
+          chatid: entry.chatid,
           text: [],
         };
         for (const [key, value] of Object.entries(entry)) {
