@@ -289,7 +289,7 @@ async function reloadData(chatId) {
 }
 
 app.get("/", async (req, res) => {
-  res.sendFile(__dirname + "/public/test.html");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 app.get("/reloadData", async (req, res) => {
