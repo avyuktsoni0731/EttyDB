@@ -30,7 +30,7 @@ Refer to our documentation below for detailed instructions on setting up and int
 Set up a Telegram channel to manage your database entries:
 
 - Open Telegram Desktop and create a new channel.
-- ![image](images/Screenshot 2024-07-23 201722.png)
+- ![image](https://github.com/stktyagi/EttyDB/blob/main/images/Screenshot%202024-07-23%20201722.png)
   
 - Make sure your channel is private to make sure your site data is private to you.
 - ![image](https://github.com/user-attachments/assets/56d09f6a-d31a-4bcc-9463-db118621c0e8)
