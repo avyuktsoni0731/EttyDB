@@ -12,7 +12,8 @@ EttyDB is a Remote Database Management and Integration Service that allows you t
 
 ## Usage
 
-Refer to our documentation below for detailed instructions on setting up and integrating EttyDB with your website.
+- Refer to our documentation below for detailed instructions on setting up and integrating EttyDB with your website.
+- Here's the link to the video on how to setup EttyDB and its usage! - [Link](https://youtu.be/C5m9GFdL8T0)
 
 ## Benefits
 
