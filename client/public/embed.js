@@ -1074,6 +1074,8 @@
           CryptoJS.enc.Hex
         );
 
+        console.log(userInput);
+
         let login_status = "Failed";
         for (let item in data) {
           if (
@@ -1083,6 +1085,7 @@
             login_status = "Success";
           }
         }
+        console.log(chatId);
         console.log(login_status);
       })
       .catch((error) => {
