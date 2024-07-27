@@ -1074,6 +1074,8 @@
           CryptoJS.enc.Hex
         );
 
+        console.log(userInput);
+
         let login_status = "Failed";
         for (let item in data) {
           if (
